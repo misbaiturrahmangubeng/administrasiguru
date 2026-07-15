@@ -3,346 +3,404 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AgendaGuru - Manajemen Kelas Digital</title>
-    <meta name="theme-color" content="#007BFF">
+    <title>AgendaGuru - Manajemen Kelas</title>
     
-    <!-- Bootstrap & Icons -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
     <style>
-        :root {
-            --primary-blue: #007BFF;
-            --primary-orange: #FF7F00;
-            --light-blue: #e6f2ff;
-            --bg-color: #f4f7f6;
-            --sidebar-width: 260px;
-            --font-family: 'Plus Jakarta Sans', sans-serif;
+        body {
+            font-family: 'Nunito', sans-serif;
+            background-color: #f4f7fb;
+            overflow-x: hidden;
         }
-        body { font-family: var(--font-family); background-color: var(--bg-color); min-height: 100vh; overflow-x: hidden; }
         
-        .btn-orange { background-color: var(--primary-orange); color: white; border: none; font-weight: 600; }
-        .btn-orange:hover { background-color: #e67300; color: white; }
-        .btn-blue { background-color: var(--primary-blue); color: white; border: none; font-weight: 600; }
+        /* LOGIN PAGE STYLES */
+        #login-section {
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #0d6efd;
+            background-image: linear-gradient(135deg, #0d6efd 0%, #0043a8 100%);
+        }
+        .login-card {
+            background: #fff;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            width: 100%;
+            max-width: 400px;
+        }
+        .login-card h2 { color: #fd7e14; font-weight: 700; margin-bottom: 20px;}
+
+        /* MAIN APP STYLES */
+        #app-section { display: none; }
         
         .sidebar {
-            width: var(--sidebar-width); height: 100vh; position: fixed; top: 0; left: 0;
-            background: linear-gradient(180deg, var(--primary-blue), #0056b3);
-            box-shadow: 2px 0 10px rgba(0,0,0,0.1); padding-top: 20px; z-index: 1040;
-            overflow-y: auto; transition: transform 0.3s ease-in-out;
+            width: 250px;
+            height: 100vh;
+            background-color: #0d6efd;
+            position: fixed;
+            color: white;
+            transition: 0.3s;
+            z-index: 1000;
         }
-        .sidebar .brand { padding: 0 20px 20px; border-bottom: 1px solid rgba(255,255,255,0.1); margin-bottom: 20px; }
-        .sidebar .brand h3 { color: var(--primary-orange); font-weight: 800; margin:0; }
-        .sidebar .brand p { color: rgba(255,255,255,0.9); font-size: 0.85rem; margin:0; }
-        
-        .nav-link { color: rgba(255,255,255,0.8); border-radius: 8px; font-weight: 500; display: flex; align-items: center; gap: 10px; padding: 12px 15px; margin: 0 10px 5px; transition: 0.3s; cursor: pointer; text-decoration: none;}
-        .nav-link:hover { background-color: rgba(255, 127, 0, 0.15); color: #ffd2a6; }
-        .nav-link.active { background-color: var(--primary-orange); color: white; box-shadow: 0 4px 10px rgba(255, 127, 0, 0.4); }
-        
-        .main-content { min-height: 100vh; transition: margin-left 0.3s; max-width: 100%; }
-        
-        @media (min-width: 992px) {
-            .sidebar { transform: translateX(0); }
-            .main-content { margin-left: var(--sidebar-width); padding: 30px; }
-            .mobile-toggle { display: none !important; }
+        .sidebar-brand {
+            padding: 20px;
+            font-size: 24px;
+            font-weight: bold;
+            color: #fd7e14;
+            text-align: center;
         }
-        @media (max-width: 991.98px) {
+        .sidebar-brand span { color: white; }
+        
+        .nav-link {
+            color: rgba(255,255,255,0.8);
+            margin: 5px 15px;
+            border-radius: 8px;
+            padding: 12px 15px;
+            font-weight: 600;
+            transition: 0.2s;
+            cursor: pointer;
+        }
+        .nav-link:hover, .nav-link.active {
+            background-color: #fd7e14;
+            color: white;
+        }
+        .nav-link i { margin-right: 10px; }
+
+        .main-content {
+            margin-left: 250px;
+            padding: 20px;
+            transition: 0.3s;
+        }
+
+        .topbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: white;
+            padding: 10px 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        .stat-card {
+            border-radius: 15px;
+            color: white;
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        .stat-siswa { background-color: #0d6efd; }
+        .stat-hadir { background-color: #fd7e14; }
+        .stat-kelas { background-color: #198754; }
+
+        .content-panel { display: none; }
+        .content-panel.active { display: block; animation: fadeIn 0.4s; }
+        
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* Responsive Mobile */
+        @media (max-width: 768px) {
             .sidebar { transform: translateX(-100%); }
             .sidebar.show { transform: translateX(0); }
-            .main-content { margin-left: 0; padding: 15px; }
-            .mobile-toggle { display: block; }
+            .main-content { margin-left: 0; }
+            .mobile-toggle { display: block !important; }
         }
-        
-        .topbar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; background: white; padding: 15px; border-radius: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.02); }
-        .card-custom { background: white; border-radius: 15px; border: none; box-shadow: 0 4px 15px rgba(0,0,0,0.03); margin-bottom: 20px; }
-        .card-header-custom { background: white; border-bottom: 1px solid #eee; padding: 15px 20px; border-radius: 15px 15px 0 0; }
-        
-        .view-section { display: none; animation: fadeIn 0.4s ease-in-out; }
-        .view-section.active { display: block; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .mobile-toggle { display: none; font-size: 24px; cursor: pointer; color: #0d6efd; }
     </style>
 </head>
 <body>
 
-<div id="app-view">
-    <!-- Sidebar -->
-    <div class="sidebar" id="sidebar-menu">
-        <div class="brand d-flex justify-content-between align-items-center">
-            <div>
-                <h3>AgendaGuru</h3>
-                <p>Manajemen Kelas</p>
-            </div>
-            <button class="btn btn-sm text-white d-lg-none" onclick="toggleSidebar()"><i class="bi bi-x-lg fs-4"></i></button>
-        </div>
-        <ul class="nav flex-column">
-            <li class="nav-item"><a class="nav-link active" onclick="switchView('beranda')"><i class="bi bi-house-door"></i> Beranda</a></li>
-            <li class="nav-item"><a class="nav-link" onclick="switchView('jurnal')"><i class="bi bi-journal-text"></i> Jurnal Harian</a></li>
-        </ul>
-        <div class="text-center mt-5 pt-3 mb-2 px-3" style="border-top: 1px solid rgba(255,255,255,0.1);">
-            <small style="color: rgba(255,255,255,0.7); font-size: 0.7rem;">Dikembangkan oleh<br><span style="color: var(--primary-orange); font-weight: bold;">Resti Novika, M.Pd.</span></small>
+    <div id="login-section">
+        <div class="login-card text-center">
+            <h2>Agenda<span>Guru</span></h2>
+            <p class="text-muted mb-4">Selamat datang kembali. Guru Hebat!</p>
+            <form id="loginForm" onsubmit="event.preventDefault(); handleLogin();">
+                <div class="mb-3 text-start">
+                    <label class="form-label">Email Terdaftar</label>
+                    <input type="email" id="email" class="form-control" placeholder="Masukkan Email Anda" required>
+                </div>
+                <div class="mb-4 text-start">
+                    <label class="form-label">Password</label>
+                    <input type="password" id="password" class="form-control" placeholder="Masukkan Password" required>
+                </div>
+                <button type="submit" class="btn btn-warning w-100 text-white fw-bold" id="btnLogin">Masuk Sekarang</button>
+            </form>
         </div>
     </div>
 
-    <!-- Main Content -->
-    <div class="main-content">
-        <div class="topbar">
-            <div class="d-flex align-items-center">
-                <button class="btn btn-outline-primary me-3 mobile-toggle border-0" onclick="toggleSidebar()"><i class="bi bi-list fs-4"></i></button>
-                <h4 class="fw-bold m-0" id="topbar-title">Beranda</h4>
-            </div>
-            <div class="user-profile d-flex align-items-center gap-2">
-                <img src="https://ui-avatars.com/api/?name=Guru&background=FF7F00&color=fff" alt="Profile" style="width: 40px; border-radius: 50%;">
-            </div>
-        </div>
-
-        <!-- View Beranda -->
-        <div id="view-beranda" class="view-section active">
-            <div class="card-custom text-white p-4" style="background: linear-gradient(45deg, var(--primary-blue), #4db8ff);">
-                <h2 class="fw-bold fs-3">Selamat Datang!</h2>
-                <p class="mb-0 opacity-75 small">Kelola absensi, nilai, jurnal, dan laporan kelas dengan mudah & cepat.</p>
+    <div id="app-section">
+        <div class="sidebar" id="sidebar">
+            <div class="sidebar-brand">Agenda<span>Guru</span></div>
+            <div class="nav flex-column">
+                <a class="nav-link active" onclick="switchTab('beranda')"><i class="bi bi-house-door-fill"></i> Beranda</a>
+                <a class="nav-link" onclick="switchTab('manajemen')"><i class="bi bi-people-fill"></i> Manajemen Kelas</a>
+                <a class="nav-link" onclick="switchTab('absensi')"><i class="bi bi-calendar-check-fill"></i> Absensi Siswa</a>
+                <a class="nav-link" onclick="switchTab('nilai')"><i class="bi bi-bar-chart-fill"></i> Data Nilai</a>
+                <a class="nav-link" onclick="switchTab('jurnal')"><i class="bi bi-journal-bookmark-fill"></i> Jurnal Harian</a>
+                <a class="nav-link" onclick="switchTab('jadwal')"><i class="bi bi-clock-fill"></i> Jadwal Pelajaran</a>
+                <hr style="border-color: rgba(255,255,255,0.2);">
+                <a class="nav-link text-danger fw-bold" onclick="logout()"><i class="bi bi-box-arrow-left"></i> Keluar Akun</a>
             </div>
         </div>
 
-        <!-- View Jurnal Harian -->
-        <div id="view-jurnal" class="view-section">
-            
-            <!-- Form Input Jurnal Baru -->
-            <div class="card-custom mb-4">
-                <div class="card-header-custom d-flex justify-content-between align-items-center">
-                    <h5 class="fw-bold mb-0">Input Jurnal Harian</h5>
+        <div class="main-content">
+            <div class="topbar">
+                <div class="d-flex align-items-center">
+                    <i class="bi bi-list mobile-toggle me-3" onclick="document.getElementById('sidebar').classList.toggle('show')"></i>
+                    <h4 class="mb-0 fw-bold" id="page-title">Beranda</h4>
                 </div>
-                <div class="card-body">
-                    <form id="form-jurnal" onsubmit="submitJurnal(event)">
-                        <div class="row">
-                            <div class="col-md-3 mb-3">
-                                <label class="form-label">Tanggal</label>
-                                <input type="date" class="form-control" id="j-tanggal" required>
+                <div class="text-end">
+                    <div class="fw-bold" id="user-name">Muchtadiah</div>
+                    <div class="text-muted small" id="user-school">Sekolah Saya</div>
+                </div>
+            </div>
+
+            <div id="beranda" class="content-panel active">
+                <div class="card border-0 shadow-sm mb-4">
+                    <div class="card-body bg-primary text-white rounded">
+                        <h4>Selamat Datang!</h4>
+                        <p class="mb-0">Kelola absensi, nilai, jurnal, dan laporan kelas dengan mudah & cepat.</p>
+                    </div>
+                </div>
+                <div class="row g-3">
+                    <div class="col-md-4"><div class="stat-card stat-siswa"><h3>41</h3><p class="mb-0">Siswa</p></div></div>
+                    <div class="col-md-4"><div class="stat-card stat-hadir"><h3>100%</h3><p class="mb-0">Hadir</p></div></div>
+                    <div class="col-md-4"><div class="stat-card stat-kelas"><h3>3</h3><p class="mb-0">Kelas</p></div></div>
+                </div>
+            </div>
+
+            <div id="jurnal" class="content-panel">
+                <div class="card border-0 shadow-sm p-4">
+                    <h5 class="fw-bold text-primary mb-3">Input / Edit Jurnal Harian</h5>
+                    <form id="jurnalForm" onsubmit="event.preventDefault(); saveJurnal();">
+                        <input type="hidden" id="jurnal_id"> <div class="row g-3 mb-3">
+                            <div class="col-md-4">
+                                <label>Tanggal</label>
+                                <input type="date" id="jurnal_tanggal" class="form-control" required>
                             </div>
-                            <div class="col-md-3 mb-3">
-                                <label class="form-label">Kelas</label>
-                                <input type="text" class="form-control" id="j-kelas" placeholder="Cth: X IPA 1" required>
+                            <div class="col-md-4">
+                                <label>Kelas</label>
+                                <select id="jurnal_kelas" class="form-select" required>
+                                    <option value="">-- Pilih Kelas --</option>
+                                    <option value="Kelas I">Kelas I</option>
+                                    <option value="Kelas II">Kelas II</option>
+                                </select>
                             </div>
-                            <div class="col-md-6 mb-3">
-                                <label class="form-label">Mata Pelajaran</label>
-                                <input type="text" class="form-control" id="j-mapel" placeholder="Cth: Matematika" required>
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <label class="form-label">Materi / Kegiatan</label>
-                                <textarea class="form-control" id="j-materi" rows="2" required></textarea>
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <label class="form-label">Keterangan Tambahan</label>
-                                <textarea class="form-control" id="j-keterangan" rows="2"></textarea>
+                            <div class="col-md-4">
+                                <label>Mata Pelajaran</label>
+                                <input type="text" id="jurnal_mapel" class="form-control" placeholder="Contoh: Tematik" required>
                             </div>
                         </div>
-                        <button type="submit" class="btn btn-blue w-100"><i class="bi bi-save"></i> Simpan Jurnal</button>
+                        <div class="mb-3">
+                            <label>Isi Jurnal</label>
+                            <textarea id="jurnal_isi" class="form-control" rows="3" placeholder="Masukkan kegiatan..." required></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary"><i class="bi bi-save"></i> Simpan Jurnal</button>
+                        <button type="button" class="btn btn-secondary d-none" id="btnBatalEdit" onclick="resetJurnalForm()">Batal Edit</button>
                     </form>
                 </div>
-            </div>
 
-            <!-- Tabel Riwayat Jurnal -->
-            <div class="card-custom">
-                <div class="card-header-custom d-flex justify-content-between align-items-center">
-                    <h5 class="fw-bold mb-0">Riwayat Jurnal</h5>
-                    <button class="btn btn-sm btn-outline-primary" onclick="loadDataJurnal()"><i class="bi bi-arrow-clockwise"></i> Refresh</button>
-                </div>
-                <div class="card-body">
+                <div class="card border-0 shadow-sm p-4 mt-4">
+                    <h5 class="fw-bold mb-3">Daftar Jurnal Harian</h5>
                     <div class="table-responsive">
-                        <table class="table table-bordered table-hover align-middle">
+                        <table class="table table-bordered table-hover">
                             <thead class="table-light">
                                 <tr>
                                     <th>Tanggal</th>
                                     <th>Kelas</th>
-                                    <th>Mapel</th>
-                                    <th>Materi</th>
-                                    <th>Keterangan</th>
-                                    <th class="text-center">Aksi</th>
-                                </tr>
+                                    <th>Mata Pelajaran</th>
+                                    <th>Isi Jurnal</th>
+                                    <th width="100">Aksi</th> </tr>
                             </thead>
-                            <tbody id="tabel-jurnal-body">
-                                <tr><td colspan="6" class="text-center text-muted">Memuat data...</td></tr>
+                            <tbody id="table-jurnal-body">
+                                <tr><td colspan="5" class="text-center">Memuat data...</td></tr>
                             </tbody>
                         </table>
                     </div>
                 </div>
             </div>
+
+            <div id="manajemen" class="content-panel"><div class="card p-4 shadow-sm"><h5>Modul Manajemen Kelas</h5><p>Silakan kembangkan mengikuti struktur HTML di atas.</p></div></div>
+            <div id="absensi" class="content-panel"><div class="card p-4 shadow-sm"><h5>Modul Absensi Siswa</h5></div></div>
+            <div id="nilai" class="content-panel"><div class="card p-4 shadow-sm"><h5>Modul Data Nilai</h5></div></div>
+            <div id="jadwal" class="content-panel"><div class="card p-4 shadow-sm"><h5>Modul Jadwal Pelajaran</h5></div></div>
         </div>
-
     </div>
-</div>
 
-<!-- MODAL EDIT JURNAL -->
-<div class="modal fade" id="modalEditJurnal" tabindex="-1">
-  <div class="modal-dialog modal-dialog-centered">
-    <div class="modal-content">
-      <div class="modal-header border-0">
-        <h5 class="modal-title fw-bold">Edit Jurnal Harian</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-      </div>
-      <div class="modal-body">
-        <form id="form-edit-jurnal" onsubmit="submitEditJurnal(event)">
-            <input type="hidden" id="edit-j-id">
-            <div class="mb-3">
-                <label class="form-label">Tanggal</label>
-                <input type="date" class="form-control" id="edit-j-tanggal" required>
-            </div>
-            <div class="mb-3">
-                <label class="form-label">Kelas</label>
-                <input type="text" class="form-control" id="edit-j-kelas" required>
-            </div>
-            <div class="mb-3">
-                <label class="form-label">Mata Pelajaran</label>
-                <input type="text" class="form-control" id="edit-j-mapel" required>
-            </div>
-            <div class="mb-3">
-                <label class="form-label">Materi / Kegiatan</label>
-                <textarea class="form-control" id="edit-j-materi" rows="2" required></textarea>
-            </div>
-            <div class="mb-3">
-                <label class="form-label">Keterangan</label>
-                <textarea class="form-control" id="edit-j-keterangan" rows="2"></textarea>
-            </div>
-            <button type="submit" class="btn btn-orange w-100">Update Jurnal</button>
-        </form>
-      </div>
-    </div>
-  </div>
-</div>
+    <script>
+        // --- KONFIGURASI API APPS SCRIPT ---
+        const API_URL = "https://script.google.com/macros/s/AKfycbwca-Wn-L1BNkO4ZsEbDQKX4fHdF6jp8rZcBMT3pWViuAZ7mOFey9iaorlBDSdQHN_S/exec"; // PASTE URL WEB APP APPS SCRIPT DI SINI
 
-<script>
-    // MASUKKAN URL WEB APP GOOGLE APPS SCRIPT ANDA DI SINI
-    const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzb903LSporV0BwgeeGa_5MZD4cxb86PqNzEZH1gTIA0AftmS5mxmZo2QksccnCctPo/exec"; 
-
-    // UI Logika
-    function toggleSidebar() {
-        document.getElementById('sidebar-menu').classList.toggle('show');
-    }
-
-    function switchView(viewId) {
-        document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
-        document.querySelectorAll('.nav-link').forEach(el => el.classList.remove('active'));
-        
-        document.getElementById('view-' + viewId).classList.add('active');
-        event.currentTarget.classList.add('active');
-        
-        let title = viewId.charAt(0).toUpperCase() + viewId.slice(1);
-        document.getElementById('topbar-title').innerText = title;
-
-        if(viewId === 'jurnal') loadDataJurnal();
-        
-        if(window.innerWidth < 992) toggleSidebar(); // Tutup sidebar di HP
-    }
-
-    // --- LOGIKA DATABASE JURNAL ---
-    let globalJurnalData = []; // Simpan sementara untuk fitur edit
-
-    function submitJurnal(e) {
-        e.preventDefault();
-        Swal.fire({ title: 'Menyimpan...', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
-
-        const payload = {
-            tanggal: document.getElementById('j-tanggal').value,
-            kelas: document.getElementById('j-kelas').value,
-            mapel: document.getElementById('j-mapel').value,
-            materi: document.getElementById('j-materi').value,
-            keterangan: document.getElementById('j-keterangan').value
+        // --- SISTEM ROUTING SPA ---
+        const pageTitles = {
+            'beranda': 'Beranda', 'manajemen': 'Manajemen Kelas', 
+            'absensi': 'Absensi Siswa', 'nilai': 'Data Nilai', 
+            'jurnal': 'Jurnal Harian', 'jadwal': 'Jadwal Pelajaran'
         };
 
-        fetch(WEB_APP_URL, {
-            method: 'POST',
-            body: JSON.stringify({ action: "simpanJurnal", payload: payload })
-        }).then(res => res.json()).then(res => {
-            Swal.fire('Berhasil!', 'Jurnal harian tersimpan.', 'success');
-            document.getElementById('form-jurnal').reset();
-            loadDataJurnal();
-        }).catch(err => Swal.fire('Error', 'Gagal menyimpan.', 'error'));
-    }
+        function switchTab(tabId) {
+            document.querySelectorAll('.content-panel').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.nav-link').forEach(el => el.classList.remove('active'));
+            
+            document.getElementById(tabId).classList.add('active');
+            event.currentTarget.classList.add('active');
+            document.getElementById('page-title').innerText = pageTitles[tabId];
+            
+            // Tutup sidebar di mobile setelah klik
+            if(window.innerWidth <= 768) { document.getElementById('sidebar').classList.remove('show'); }
 
-    function loadDataJurnal() {
-        document.getElementById('tabel-jurnal-body').innerHTML = '<tr><td colspan="6" class="text-center">Memuat data...</td></tr>';
-        
-        fetch(WEB_APP_URL, {
-            method: 'POST',
-            body: JSON.stringify({ action: "getJurnal" })
-        }).then(res => res.json()).then(res => {
-            globalJurnalData = res.data;
-            renderTabelJurnal();
-        }).catch(err => {
-            document.getElementById('tabel-jurnal-body').innerHTML = '<tr><td colspan="6" class="text-center text-danger">Gagal memuat data</td></tr>';
-        });
-    }
-
-    function renderTabelJurnal() {
-        const tbody = document.getElementById('tabel-jurnal-body');
-        tbody.innerHTML = "";
-        
-        if(globalJurnalData.length === 0) {
-            tbody.innerHTML = '<tr><td colspan="6" class="text-center text-muted">Belum ada jurnal bulan ini.</td></tr>';
-            return;
+            // Load data spesifik tab
+            if(tabId === 'jurnal') loadJurnalData();
         }
 
-        globalJurnalData.forEach(jurnal => {
-            let tr = document.createElement('tr');
-            tr.innerHTML = `
-                <td>${jurnal.tanggal}</td>
-                <td><span class="badge bg-secondary">${jurnal.kelas}</span></td>
-                <td class="fw-bold">${jurnal.mapel}</td>
-                <td>${jurnal.materi}</td>
-                <td>${jurnal.keterangan}</td>
-                <td class="text-center">
-                    <button class="btn btn-sm btn-outline-primary" onclick="bukaModalEdit('${jurnal.id}')">
-                        <i class="bi bi-pencil-square"></i> Edit
-                    </button>
-                </td>
-            `;
-            tbody.prepend(tr); // Yang terbaru di atas
-        });
-    }
+        // --- SISTEM AUTENTIKASI ---
+        function handleLogin() {
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const btn = document.getElementById('btnLogin');
+            
+            btn.innerHTML = 'Memeriksa...';
+            btn.disabled = true;
 
-    function bukaModalEdit(id) {
-        const jurnal = globalJurnalData.find(j => j.id === id);
-        if(!jurnal) return;
+            // Simulasi Request API (ganti dengan fetch asli jika AppScript siap)
+            const formData = new URLSearchParams();
+            formData.append('action', 'login');
+            formData.append('email', email);
+            formData.append('password', password);
 
-        // Isi form modal dengan data lama
-        document.getElementById('edit-j-id').value = jurnal.id;
-        document.getElementById('edit-j-tanggal').value = jurnal.tanggal;
-        document.getElementById('edit-j-kelas').value = jurnal.kelas;
-        document.getElementById('edit-j-mapel').value = jurnal.mapel;
-        document.getElementById('edit-j-materi').value = jurnal.materi;
-        document.getElementById('edit-j-keterangan').value = jurnal.keterangan;
+            fetch(API_URL, { method: 'POST', body: formData })
+            .then(res => res.json())
+            .then(data => {
+                if(data.success) {
+                    Swal.fire({icon: 'success', title: 'Berhasil', text: 'Selamat Datang!', timer: 1500, showConfirmButton: false});
+                    document.getElementById('login-section').style.display = 'none';
+                    document.getElementById('app-section').style.display = 'block';
+                    document.getElementById('user-name').innerText = data.user.nama;
+                    document.getElementById('user-school').innerText = data.user.sekolah;
+                } else {
+                    Swal.fire({icon: 'error', title: 'Gagal', text: data.message});
+                }
+            })
+            .catch(err => {
+                Swal.fire({icon: 'error', title: 'Error', text: 'Koneksi ke server gagal.'});
+            })
+            .finally(() => { btn.innerHTML = 'Masuk Sekarang'; btn.disabled = false; });
+        }
 
-        var myModal = new bootstrap.Modal(document.getElementById('modalEditJurnal'));
-        myModal.show();
-    }
+        function logout() {
+            Swal.fire({
+                title: 'Yakin ingin keluar?', icon: 'warning', showCancelButton: true,
+                confirmButtonText: 'Ya, Keluar', cancelButtonText: 'Batal'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    document.getElementById('login-section').style.display = 'flex';
+                    document.getElementById('app-section').style.display = 'none';
+                    document.getElementById('loginForm').reset();
+                }
+            });
+        }
 
-    function submitEditJurnal(e) {
-        e.preventDefault();
-        Swal.fire({ title: 'Memperbarui...', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
+        // --- FITUR JURNAL HARIAN (CRUD) ---
+        let currentJurnalData = [];
 
-        const payload = {
-            id: document.getElementById('edit-j-id').value,
-            tanggal: document.getElementById('edit-j-tanggal').value,
-            kelas: document.getElementById('edit-j-kelas').value,
-            mapel: document.getElementById('edit-j-mapel').value,
-            materi: document.getElementById('edit-j-materi').value,
-            keterangan: document.getElementById('edit-j-keterangan').value
-        };
+        function loadJurnalData() {
+            document.getElementById('table-jurnal-body').innerHTML = '<tr><td colspan="5" class="text-center">Memuat data...</td></tr>';
+            
+            const formData = new URLSearchParams();
+            formData.append('action', 'getJurnal');
 
-        fetch(WEB_APP_URL, {
-            method: 'POST',
-            body: JSON.stringify({ action: "updateJurnal", payload: payload })
-        }).then(res => res.json()).then(res => {
-            Swal.fire('Berhasil!', 'Jurnal harian diperbarui.', 'success');
-            bootstrap.Modal.getInstance(document.getElementById('modalEditJurnal')).hide();
-            loadDataJurnal();
-        }).catch(err => Swal.fire('Error', 'Gagal memperbarui.', 'error'));
-    }
+            fetch(API_URL, { method: 'POST', body: formData })
+            .then(res => res.json())
+            .then(data => {
+                if(data.success) {
+                    currentJurnalData = data.data;
+                    renderJurnalTable();
+                }
+            });
+        }
 
-    // Set tanggal default hari ini
-    document.getElementById('j-tanggal').valueAsDate = new Date();
-</script>
+        function renderJurnalTable() {
+            const tbody = document.getElementById('table-jurnal-body');
+            tbody.innerHTML = '';
+            
+            if(currentJurnalData.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="5" class="text-center">Belum ada jurnal</td></tr>';
+                return;
+            }
+
+            currentJurnalData.forEach(item => {
+                tbody.innerHTML += `
+                    <tr>
+                        <td>${item.tanggal}</td>
+                        <td>${item.kelas}</td>
+                        <td>${item.mapel}</td>
+                        <td>${item.isi}</td>
+                        <td>
+                            <button class="btn btn-sm btn-warning text-white" onclick="editJurnal('${item.id}')">
+                                <i class="bi bi-pencil-square"></i> Edit
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            });
+        }
+
+        function saveJurnal() {
+            const id = document.getElementById('jurnal_id').value;
+            const btnSubmit = document.querySelector('#jurnalForm button[type="submit"]');
+            btnSubmit.innerHTML = 'Menyimpan...'; btnSubmit.disabled = true;
+
+            const formData = new URLSearchParams();
+            formData.append('action', 'saveJurnal');
+            formData.append('id', id);
+            formData.append('tanggal', document.getElementById('jurnal_tanggal').value);
+            formData.append('kelas', document.getElementById('jurnal_kelas').value);
+            formData.append('mapel', document.getElementById('jurnal_mapel').value);
+            formData.append('isi', document.getElementById('jurnal_isi').value);
+
+            fetch(API_URL, { method: 'POST', body: formData })
+            .then(res => res.json())
+            .then(data => {
+                if(data.success) {
+                    Swal.fire({icon: 'success', title: 'Berhasil', text: data.message, timer: 1500});
+                    resetJurnalForm();
+                    loadJurnalData(); // Reload table
+                }
+            })
+            .finally(() => {
+                btnSubmit.innerHTML = '<i class="bi bi-save"></i> Simpan Jurnal';
+                btnSubmit.disabled = false;
+            });
+        }
+
+        // TRIGGER SAAT TOMBOL EDIT DIKLIK
+        function editJurnal(id) {
+            const item = currentJurnalData.find(x => x.id === id);
+            if(item) {
+                document.getElementById('jurnal_id').value = item.id;
+                document.getElementById('jurnal_tanggal').value = item.tanggal;
+                document.getElementById('jurnal_kelas').value = item.kelas;
+                document.getElementById('jurnal_mapel').value = item.mapel;
+                document.getElementById('jurnal_isi').value = item.isi;
+                
+                document.querySelector('#jurnalForm button[type="submit"]').innerHTML = '<i class="bi bi-check2-circle"></i> Update Jurnal';
+                document.getElementById('btnBatalEdit').classList.remove('d-none');
+                window.scrollTo(0, 0); // Scroll ke atas
+            }
+        }
+
+        function resetJurnalForm() {
+            document.getElementById('jurnalForm').reset();
+            document.getElementById('jurnal_id').value = '';
+            document.querySelector('#jurnalForm button[type="submit"]').innerHTML = '<i class="bi bi-save"></i> Simpan Jurnal';
+            document.getElementById('btnBatalEdit').classList.add('d-none');
+        }
+    </script>
 </body>
 </html>
